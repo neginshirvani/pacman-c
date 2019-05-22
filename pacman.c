@@ -19,8 +19,8 @@ int x1_pos = 0;
 int y1_pos = 0;
 int x2_pos = 0;
 int y2_pos = 0;
-char tele_pos1[3];
-char tele_pos2[3];
+char tele_pos1[2];
+char tele_pos2[2];
 
 int barrier(int x , int y){
     if(arr[x][y] == ' ') {
@@ -222,8 +222,24 @@ int game_time(float seconde){
                 arr[y1_pos - y1_change][x1_pos - x1_change]  = ' ';
                 big_food();
             }
-            else if(arr[y1_pos + y1_change][x1_pos + x1_change] == 'T') {
-                arr[tele_pos1[0]][tele_pos1[1]] = 'X';
+            else if((y1_pos + y1_change)==tele_pos1[0]&&(x1_pos + x1_change) == tele_pos1[1]) {
+                arr[tele_pos2[0]][tele_pos2[1]] = ' ';
+                arr[tele_pos1[0]][tele_pos1[1]] = ' ';
+                arr[y1_pos][x1_pos]  = ' ';
+                y1_pos=tele_pos2[0];
+                x1_pos=tele_pos2[1];
+
+                teleport();
+
+            }
+            else if((y1_pos + y1_change)==tele_pos2[0]&&(x1_pos + x1_change) == tele_pos2[1]) {
+                arr[tele_pos1[0]][tele_pos1[1]] = ' ';
+                arr[tele_pos2[0]][tele_pos2[1]] = ' ';
+                arr[y1_pos][x1_pos]  = ' ';
+                y1_pos=tele_pos1[0];
+                x1_pos=tele_pos1[1];
+
+                teleport();
             }
             else {
                 y1_pos += y1_change;
