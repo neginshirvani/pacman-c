@@ -21,7 +21,8 @@ int x2_pos = 0;
 int y2_pos = 0;
 char tele_pos1[2];
 char tele_pos2[2];
-
+char p1[1000],p2[1000];
+int player1_score=0,player2_score=0;
 int barrier(int x , int y){
     if(arr[x][y] == ' ') {
         arr[x][y] = 'B';
@@ -180,6 +181,7 @@ int mapp(int y , int x){
     player();
     block_maker();
 
+
 }
 
 int show_mapp(int y , int x){
@@ -192,6 +194,7 @@ int show_mapp(int y , int x){
         putchar('\n') ;
     }
     movement();
+    printf("%s : %d \n%s : %d",p1,player1_score,p2,player2_score);
 }
 
 int player(){
@@ -225,13 +228,14 @@ int game_time(float seconde){
 
 
 
-            if(arr[y1_pos + y1_change][x1_pos + x1_change] == 'B' || arr[y1_pos + y1_change][x1_pos + x1_change] == '!' || (y1_change == 0 && x1_change == 0))
+            if(arr[y1_pos + y1_change][x1_pos + x1_change] == 'B' || arr[y1_pos + y1_change][x1_pos + x1_change] == '!' || (y1_change == 0 && x1_change == 0) || arr[y1_pos + y1_change][x1_pos + x1_change] == 'O')
                 arr[y1_pos][x1_pos]  = 'X';
             else if(arr[y1_pos + y1_change][x1_pos + x1_change] == '.') {
                 y1_pos += y1_change;
                 x1_pos += x1_change;
                 arr[y1_pos][x1_pos]  = 'X';
                 arr[y1_pos - y1_change][x1_pos - x1_change]  = ' ';
+                ++player1_score;
                 random_food(1);
             }
             else if(arr[y1_pos + y1_change][x1_pos + x1_change] == 'F') {
@@ -239,6 +243,7 @@ int game_time(float seconde){
                 x1_pos += x1_change;
                 arr[y1_pos][x1_pos]  = 'X';
                 arr[y1_pos - y1_change][x1_pos - x1_change]  = ' ';
+                player1_score+=5;
                 big_food();
             }
             else if((y1_pos + y1_change)==tele_pos1[0]&&(x1_pos + x1_change) == tele_pos1[1]) {
@@ -267,13 +272,14 @@ int game_time(float seconde){
                 arr[y1_pos - y1_change][x1_pos - x1_change]  = ' ';
             }
 
-            if(arr[y2_pos + y2_change][x2_pos + x2_change] == 'B' || arr[y2_pos + y2_change][x2_pos + x2_change] == '!' || (y2_change == 0 && x2_change == 0))
+            if(arr[y2_pos + y2_change][x2_pos + x2_change] == 'B' || arr[y2_pos + y2_change][x2_pos + x2_change] == '!' || (y2_change == 0 && x2_change == 0) || arr[y2_pos + y2_change][x2_pos + x2_change] == 'X')
                 arr[y2_pos][x2_pos]  = 'O';
             else if(arr[y2_pos + y2_change][x2_pos + x2_change] == '.') {
                 y2_pos += y2_change;
                 x2_pos += x2_change;
                 arr[y2_pos][x2_pos]  = 'O';
                 arr[y2_pos - y2_change][x2_pos - x2_change]  = ' ';
+                ++player2_score;
                 random_food(1);
             }
             else if(arr[y2_pos + y2_change][x2_pos + x2_change] == 'F') {
@@ -281,6 +287,7 @@ int game_time(float seconde){
                 x2_pos += x2_change;
                 arr[y2_pos][x2_pos]  = 'O';
                 arr[y2_pos - y2_change][x2_pos - x2_change]  = ' ';
+                player2_score+=5;
                 big_food();
             }
             else if(arr[y2_pos + y2_change][x2_pos + x2_change] == 'T') {
@@ -320,8 +327,10 @@ void file_info(){
 
 int main(){
     srand(time(0));
-    printf("GAME MODES : \n1. PLAYER 1 VS PLAYTER 2 \n2. PLAYER 1 VS COMPUTER \n CHOOSE ... \n");
-    int c=getchar();
+    get_name();
+    printf("GAME MODES : \n1. PLAYER 1 VS PLAYTER 2 \n2. PLAYER 1 VS COMPUTER \nCHOOSE ... \n");
+
+    getchar();
     start = clock();
     file_info();
     float seconde = timer ;
@@ -330,7 +339,26 @@ int main(){
     game_time(seconde) ;
 }
 
-
+void get_name(){
+    printf("ENTER PLAYER 1 NAME ...\n");
+    scanf("%s",p1);
+    while(strcmp(p1,"computer")==0){
+        printf("ENTER PLAYER 1 NAME ...\n");
+        scanf("%s",p1);
+    }
+    printf("ENTER PLAYER 2 NAME ...\n");
+    scanf("%s",p2);
+    if(strcmp(p2,"computer")==0){
+        while(strcmp(p2,"computer")==0)
+            printf("ENTER PLAYER 1 NAME ...\n");
+            scanf("%s",p2);
+    }
+    while(strcmp(p2,"computer")==0||strcmp(p2,p1)==0){
+        printf("ENTER PLAYER 2 NAME ...\n");
+        scanf("%s",p2);
+    }
+    printf("%s \n%s",p1,p2);
+}
 
 
 
