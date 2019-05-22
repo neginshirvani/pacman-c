@@ -196,6 +196,15 @@ int show_mapp(int y , int x){
     movement();
     printf("%s : %d \n%s : %d",p1,player1_score,p2,player2_score);
 }
+int write_file() {
+    FILE* fp;
+    int i;
+
+    fp = fopen("e:\\c\\pacman_na\\score.txt", "w");
+    fprintf(fp,"%s's score: %d\n%s's score: %d",p1,player1_score,p2,player2_score);
+
+    fclose(fp);
+}
 
 int player(){
     int i = 0;
@@ -327,16 +336,17 @@ void file_info(){
 
 int main(){
     srand(time(0));
-    get_name();
-    printf("GAME MODES : \n1. PLAYER 1 VS PLAYTER 2 \n2. PLAYER 1 VS COMPUTER \nCHOOSE ... \n");
 
+    printf("GAME MODES : \n1. PLAYER 1 VS PLAYTER 2 \n2. PLAYER 1 VS COMPUTER \nCHOOSE ... \n");
     getchar();
+    get_name();
     start = clock();
     file_info();
     float seconde = timer ;
     mapp(width , length) ;
     putchar('\n') ;
     game_time(seconde) ;
+    write_file();
 }
 
 void get_name(){
