@@ -102,12 +102,31 @@ int random_food(int n){
 
 int x1_change = 0;
 int y1_change = 0;
+int x2_change = 0;
+int y2_change = 0;
+
 
 void movement(){
     while(kbhit()) {
         int key = getch();
 
         switch(key) {
+            case '8':
+                x2_change = 0;
+                y2_change = -1;
+                break;
+            case '2':
+                x2_change = 0;
+                y2_change = 1;
+                break;
+            case '4':
+                x2_change = -1;
+                y2_change = 0;
+                break;
+            case '6':
+                x2_change = 1;
+                y2_change = 0;
+                break;
             case 'w':
                 x1_change = 0;
                 y1_change = -1;
@@ -246,6 +265,32 @@ int game_time(float seconde){
                 x1_pos += x1_change;
                 arr[y1_pos][x1_pos]  = 'X';
                 arr[y1_pos - y1_change][x1_pos - x1_change]  = ' ';
+            }
+
+            if(arr[y2_pos + y2_change][x2_pos + x2_change] == 'B' || arr[y2_pos + y2_change][x2_pos + x2_change] == '!' || (y2_change == 0 && x2_change == 0))
+                arr[y2_pos][x2_pos]  = 'O';
+            else if(arr[y2_pos + y2_change][x2_pos + x2_change] == '.') {
+                y2_pos += y2_change;
+                x2_pos += x2_change;
+                arr[y2_pos][x2_pos]  = 'O';
+                arr[y2_pos - y2_change][x2_pos - x2_change]  = ' ';
+                random_food(1);
+            }
+            else if(arr[y2_pos + y2_change][x2_pos + x2_change] == 'F') {
+                y2_pos += y2_change;
+                x2_pos += x2_change;
+                arr[y2_pos][x2_pos]  = 'O';
+                arr[y2_pos - y2_change][x2_pos - x2_change]  = ' ';
+                big_food();
+            }
+            else if(arr[y2_pos + y2_change][x2_pos + x2_change] == 'T') {
+                arr[tele_pos1[0]][tele_pos1[1]] = 'O';
+            }
+            else {
+                y2_pos += y2_change;
+                x2_pos += x2_change;
+                arr[y2_pos][x2_pos]  = 'O';
+                arr[y2_pos - y2_change][x2_pos - x2_change]  = ' ';
             }
 
             show_mapp(width, length);
