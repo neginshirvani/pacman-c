@@ -19,6 +19,7 @@ int x1_pos = 0;
 int y1_pos = 0;
 int x2_pos = 0;
 int y2_pos = 0;
+int ch;
 char tele_pos1[2];
 char tele_pos2[2];
 char p1[1000],p2[1000];
@@ -106,11 +107,64 @@ int y1_change = 0;
 int x2_change = 0;
 int y2_change = 0;
 
+void ai() {
 
-void movement(){
+    while(kbhit()){
+        int key = getch();
+        switch(key) {
+                case 'w':
+                    x1_change = 0;
+                    y1_change = -1;
+                    break;
+                case 's':
+                    x1_change = 0;
+                    y1_change = 1;
+                    break;
+                case 'a':
+                    x1_change = -1;
+                    y1_change = 0;
+                    break;
+                case 'd':
+                    x1_change = 1;
+                    y1_change = 0;
+                    break;
+
+            }
+    }
+        int move_toward = rand() % 4;
+        if (arr[y2_pos+1][x1_pos]=='.')//||arr[y2_pos][x1_pos+2]=='.'||arr[y2_pos][x1_pos+3]=='.')
+            move_toward=1;
+        else if (arr[y2_pos][x1_pos+1]=='.')//||arr[y2_pos][x1_pos+2]=='.'||arr[y2_pos][x1_pos+3]=='.')
+            move_toward=3;
+        else if (arr[y2_pos-1][x1_pos]=='.')//||arr[y2_pos-2][x1_pos]=='.'||arr[y2_pos-3][x1_pos]=='.')
+            move_toward=0;
+        else if (arr[y2_pos][x1_pos-1]=='.')//||arr[y2_pos][x1_pos-2]=='.'||arr[y2_pos][x1_pos-3]=='.')
+            move_toward=2;
+        switch(move_toward) {
+            case 0:
+                x2_change = 0;
+                y2_change = -1;
+                break;
+            case 1:
+                x2_change = 0;
+                y2_change = 1;
+                break;
+            case 2:
+                x2_change = -1;
+                y2_change = 0;
+                break;
+            case 3:
+                x2_change = 1;
+                y2_change = 0;
+                break;
+        }
+}
+
+
+
+void movement_1(){
     while(kbhit()) {
         int key = getch();
-
         switch(key) {
             case '8':
                 x2_change = 0;
@@ -144,6 +198,7 @@ void movement(){
                 x1_change = 1;
                 y1_change = 0;
                 break;
+
         }
 
     }
@@ -193,7 +248,13 @@ int show_mapp(int y , int x){
         }
         putchar('\n') ;
     }
-    movement();
+
+    if (ch=='2') {
+        ai();
+    }
+    if(ch=='1') {
+        movement_1();
+    }
     printf("%s : %d \n%s : %d",p1,player1_score,p2,player2_score);
 }
 int write_file() {
@@ -234,9 +295,6 @@ int game_time(float seconde){
     while(seconde  > 0){
         fflush(stdout) ;
         if(clock() - start > 500){
-
-
-
             if(arr[y1_pos + y1_change][x1_pos + x1_change] == 'B' || arr[y1_pos + y1_change][x1_pos + x1_change] == '!' || (y1_change == 0 && x1_change == 0) || arr[y1_pos + y1_change][x1_pos + x1_change] == 'O')
                 arr[y1_pos][x1_pos]  = 'X';
             else if(arr[y1_pos + y1_change][x1_pos + x1_change] == '.') {
@@ -299,8 +357,24 @@ int game_time(float seconde){
                 player2_score+=5;
                 big_food();
             }
-            else if(arr[y2_pos + y2_change][x2_pos + x2_change] == 'T') {
-                arr[tele_pos1[0]][tele_pos1[1]] = 'O';
+            else if((y2_pos + y2_change)==tele_pos1[0]&&(x2_pos + x2_change) == tele_pos1[1]) {
+                arr[tele_pos2[0]][tele_pos2[1]] = ' ';
+                arr[tele_pos1[0]][tele_pos1[1]] = ' ';
+                arr[y2_pos][x2_pos]  = ' ';
+                y2_pos=tele_pos2[0];
+                x2_pos=tele_pos2[1];
+
+                teleport();
+
+            }
+            else if((y2_pos + y2_change)==tele_pos2[0]&&(x2_pos + x2_change) == tele_pos2[1]) {
+                arr[tele_pos1[0]][tele_pos1[1]] = ' ';
+                arr[tele_pos2[0]][tele_pos2[1]] = ' ';
+                arr[y2_pos][x2_pos]  = ' ';
+                y2_pos=tele_pos1[0];
+                x2_pos=tele_pos1[1];
+
+                teleport();
             }
             else {
                 y2_pos += y2_change;
@@ -334,20 +408,6 @@ void file_info(){
 
 }
 
-int main(){
-    srand(time(0));
-
-    printf("GAME MODES : \n1. PLAYER 1 VS PLAYTER 2 \n2. PLAYER 1 VS COMPUTER \nCHOOSE ... \n");
-    getchar();
-    get_name();
-    start = clock();
-    file_info();
-    float seconde = timer ;
-    mapp(width , length) ;
-    putchar('\n') ;
-    game_time(seconde) ;
-    write_file();
-}
 
 void get_name(){
     printf("ENTER PLAYER 1 NAME ...\n");
@@ -367,8 +427,59 @@ void get_name(){
         printf("ENTER PLAYER 2 NAME ...\n");
         scanf("%s",p2);
     }
-    printf("%s \n%s",p1,p2);
 }
+void one_player(){
+    printf("ENTER PLAYER 1 NAME ...\n");
+    scanf("%s",p1);
+    while(strcmp(p1,"computer")==0){
+        printf("ENTER PLAYER 1 NAME ...\n");
+        scanf("%s",p1);
+    }
+    strcpy(p2 , "computer");
+    start = clock();
+    file_info();
+    float seconde = timer ;
+    mapp(width , length) ;
+    putchar('\n') ;
+    game_time(seconde) ;
+    //ai();
+    write_file();
+
+}
+void two_player(){
+    get_name();
+    start = clock();
+    file_info();
+    float seconde = timer ;
+    mapp(width , length) ;
+    putchar('\n') ;
+    game_time(seconde) ;
+    write_file();
+}
+
+int main(){
+    srand(time(0));
+
+    printf("GAME MODES : \n1. PLAYER 1 VS PLAYTER 2 \n2. PLAYER 1 VS COMPUTER \nCHOOSE ... \n");
+    ch = getchar();
+    if (ch=='2'){
+        one_player();
+        return 0;
+    }
+    if (ch=='1'){
+       two_player();
+    }
+    /*get_name();
+    start = clock();
+    file_info();
+    float seconde = timer ;
+    mapp(width , length) ;
+    putchar('\n') ;
+    game_time(seconde) ;
+    write_file();
+    */
+}
+
 
 
 
